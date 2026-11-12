@@ -1,30 +1,10 @@
-import { Request, Response, NextFunction } from "express";
-import { orderService } from "../services/order.service";
-import { createOrderSchema } from "../schemas/order.schema";
+import { Router } from "express";
+import { orderController } from "../controllers/order.controller";
 
-export const orderController = {
-  async list(_req: Request, res: Response, next: NextFunction) {
-    try {
-      res.json(await orderService.list());
-    } catch (err) { next(err); }
-  },
+const router = Router();
 
-  async getById(req: Request, res: Response, next: NextFunction) {
-    try {
-      res.json(await orderService.getById(Number(req.params.id)));
-    } catch (err) { next(err); }
-  },
+router.get("/",    orderController.list);
+router.get("/:id", orderController.getById);
+router.post("/",   orderController.create);
 
-  async create(req: Request, res: Response, next: NextFunction) {
-    try {
-      const data = createOrderSchema.parse(req.body);
-      res.status(201).json(await orderService.create(data));
-    } catch (err) { next(err); }
-  },
-
-  async listByCustomer(req: Request, res: Response, next: NextFunction) {
-    try {
-      res.json(await orderService.listByCustomer(Number(req.params.id)));
-    } catch (err) { next(err); }
-  }
-};
+export default router;
